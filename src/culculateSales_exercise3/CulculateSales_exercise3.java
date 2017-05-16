@@ -1,6 +1,5 @@
 package culculateSales_exercise3;
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,16 +36,14 @@ public class CulculateSales_exercise3 {
 					String[] branches = s.split(",");
 					branchMap.put(branches[0], branches[1]);
 				}
-				br.close();// ■■finallyでしめる。スコープで、elseとtryの間にて、frとbrを宣言する。
+				br.close();
 			} catch (IOException e) {
 				System.out.println(e);
 			}
-			System.out.println(branchMap.entrySet()); // ■
 
 		}
-// ***************************▲(処理内容1:OK)***********************************************
 
-		File commodityFile = new File(args[0] + "\\commodity.lst"); // 商品定義ファイル
+		File commodityFile = new File(args[0] + "\\commodity.lst");
 		if (!commodityFile.exists()) {
 			System.out.println(commodityFile + "が存在しません");
 			return;
@@ -67,10 +64,9 @@ public class CulculateSales_exercise3 {
 				System.out.println(commodityMap.entrySet());
 
 			}
-// ***************************▲(処理内容3:// OK)***********************************************
 
 			ArrayList<String> salesArray = new ArrayList<String>();
-			File salesFile = new File(args[0]); // 売上ファイルを探す
+			File salesFile = new File(args[0]);
 			String[] fileList = salesFile.list();
 			for (String salesList : fileList) {
 				if (salesList.matches("\\d{8}\\.rcd$")) {
@@ -78,12 +74,7 @@ public class CulculateSales_exercise3 {
 				}
 			}
 			Collections.sort(salesArray);
-			System.out.println("登録データ数:" + salesArray.size()); // ■
-			String listTest = salesArray.get(2); // ■
-			System.out.println(listTest); // ■
 
-// ***************************▲◎(処理内容:8桁.rcdをリスト化、降順OK)********************************
-			// ●この下、大問題か。(salesArrayファイルをStringからIntに変える流れ。)
 			for (int arrayIndex = 0; arrayIndex < salesArray.size() - 1; arrayIndex++) {
 				String sANum = salesArray.get(arrayIndex).substring(0, 8);
 				int sANumNew = Integer.parseInt(sANum);
@@ -98,7 +89,7 @@ public class CulculateSales_exercise3 {
 					return;
 				}
 			}
-// ***************************▲◎(処理内容:連番かどうかOK)***********************************************
+
 			try {
 				for (int arrayIndex = 0; arrayIndex < salesArray.size(); arrayIndex++) {
 					// ここで、salesArrayをファイルを順番に読み込んでいく
@@ -129,30 +120,31 @@ public class CulculateSales_exercise3 {
 					}
 					long Sales_Long = Long.parseLong(saleFileList.get(2)); // ●足し算するためにstrをlong（数値）に変換
 
-
-
-
-					if(!(branchSalesMap.containsKey(saleFileList.get(0)))){ //売上集計Mapに読み込んだ１行目が含む or not
+					if (!(branchSalesMap.containsKey(saleFileList.get(0)))) { // 売上集計Mapに読み込んだ１行目が含む
+																				// or
+																				// not
 						branchSalesMap.put(saleFileList.get(0), Sales_Long);
 					} else {
-						long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long; //●支店別売上合計値をだして、マップに戻す。
+						long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long; // ●支店別売上合計値をだして、マップに戻す。
 						String sumCount = String.valueOf(sumBranchSales);
-						if(!sumCount.matches("^\\d{1,10}$")){
-						System.out.println(sumCount);
-						System.out.println("合計金額が10桁を超えました");
-						return;
+						if (!sumCount.matches("^\\d{1,10}$")) {
+							System.out.println(sumCount);
+							System.out.println("合計金額が10桁を超えました");
+							return;
 						}
-						branchSalesMap.put(saleFileList.get(0), sumBranchSales);//■
+						branchSalesMap.put(saleFileList.get(0), sumBranchSales);// ■
 					}
-					if(!(commoditySalesMap.containsKey(saleFileList.get(1)))){ //売上集計Mapに読み込んだ１行目が含む or not
+					if (!(commoditySalesMap.containsKey(saleFileList.get(1)))) { // 売上集計Mapに読み込んだ１行目が含む
+																					// or
+																					// not
 						commoditySalesMap.put(saleFileList.get(1), Sales_Long);
 					} else {
-						long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long; //●支店別売上合計値をだして、マップに戻す。
+						long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long; // ●支店別売上合計値をだして、マップに戻す。
 						String sumCount2 = String.valueOf(sumCommoditySales);
-						if(!sumCount2.matches("^\\d{1,10}$")){
-						System.out.println(sumCount2);
-						System.out.println("合計金額が10桁を超えました");
-						return;
+						if (!sumCount2.matches("^\\d{1,10}$")) {
+							System.out.println(sumCount2);
+							System.out.println("合計金額が10桁を超えました");
+							return;
 						}
 						commoditySalesMap.put(saleFileList.get(1), sumCommoditySales);
 					}
@@ -164,70 +156,57 @@ public class CulculateSales_exercise3 {
 				e.printStackTrace();
 			} finally {
 			}
-// ***************************▲◎(処理内容:書き込む前までOK)*****************************************
 
-			 List<Map.Entry<String,Long>> branchSalesEntry =
-		              new ArrayList<Map.Entry<String,Long>>( branchSalesMap.entrySet());
-		        Collections.sort(branchSalesEntry, new Comparator<Map.Entry<String,Long>>() {
+			List<Map.Entry<String, Long>> branchSalesEntry = new ArrayList<Map.Entry<String, Long>>(
+					branchSalesMap.entrySet());
+			Collections.sort(branchSalesEntry, new Comparator<Map.Entry<String, Long>>() {
 
-					@Override
-					public int compare(java.util.Map.Entry<String, Long> entry1, java.util.Map.Entry<String, Long> entry2) {
-						// TODO 自動生成されたメソッド・スタブ
-						return entry2.getValue().compareTo(entry1.getValue()); //降順
+				@Override
+				public int compare(java.util.Map.Entry<String, Long> entry1, java.util.Map.Entry<String, Long> entry2) {
+					// TODO 自動生成されたメソッド・スタブ
+					return entry2.getValue().compareTo(entry1.getValue()); // 降順
 				}
 			});
 
-			try{
-				 File branchOutFile = new File(args[0],"branch.out");
+			try {
+				File branchOutFile = new File(args[0], "branch.out");
 				FileWriter fwBranch = new FileWriter(branchOutFile);
 				BufferedWriter bwBranch = new BufferedWriter(fwBranch);
 
 				for (Entry<String, Long> forBranchOut : branchSalesEntry) {
-
-
-
 					bwBranch.write(forBranchOut.getKey() + "," + branchMap.get(forBranchOut.getKey()) + ","
-						 + forBranchOut.getValue());
+							+ forBranchOut.getValue());
 					bwBranch.newLine();
-
 				}
 				bwBranch.close();
-
-			}catch (IOException e) {
-			System.out.println(e);
+			} catch (IOException e) {
+				System.out.println(e);
 			}
 
+			List<Map.Entry<String, Long>> commoditySalesEntry = new ArrayList<Map.Entry<String, Long>>(
+					commoditySalesMap.entrySet());
+			Collections.sort(commoditySalesEntry, new Comparator<Map.Entry<String, Long>>() {
 
-			 List<Map.Entry<String,Long>> commoditySalesEntry =
-		              new ArrayList<Map.Entry<String,Long>>( commoditySalesMap.entrySet());
-		        Collections.sort(commoditySalesEntry, new Comparator<Map.Entry<String,Long>>() {
-
-					@Override
-					public int compare(java.util.Map.Entry<String, Long> entry1, java.util.Map.Entry<String, Long> entry2) {
-						// TODO 自動生成されたメソッド・スタブ
-						return entry2.getValue().compareTo(entry1.getValue()); //降順
+				@Override
+				public int compare(java.util.Map.Entry<String, Long> entry1, java.util.Map.Entry<String, Long> entry2) {
+					// TODO 自動生成されたメソッド・スタブ
+					return entry2.getValue().compareTo(entry1.getValue()); // 降順
 				}
 			});
 
-			try{
-				File commodityOutFile = new File(args[0],"commodity.out");
+			try {
+				File commodityOutFile = new File(args[0], "commodity.out");
 				FileWriter fwCommodity = new FileWriter(commodityOutFile);
 				BufferedWriter bwCommodity = new BufferedWriter(fwCommodity);
-
 				for (Entry<String, Long> forCommodityOut : commoditySalesEntry) {
-
-
 					bwCommodity.write(forCommodityOut.getKey() + "," + commodityMap.get(forCommodityOut.getKey()) + ","
-						 + forCommodityOut.getValue());
+							+ forCommodityOut.getValue());
 					bwCommodity.newLine();
-
 				}
 				bwCommodity.close();
-
-			}catch (IOException e) {
-			System.out.println(e);
+			} catch (IOException e) {
+				System.out.println(e);
 			}
-
 
 		}
 	}
