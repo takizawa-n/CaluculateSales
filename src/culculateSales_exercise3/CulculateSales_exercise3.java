@@ -61,8 +61,6 @@ public class CulculateSales_exercise3 {
 			} catch (IOException e) {
 				System.out.println(e);
 			} finally {
-				System.out.println(commodityMap.entrySet());
-
 			}
 
 			ArrayList<String> salesArray = new ArrayList<String>();
@@ -78,11 +76,9 @@ public class CulculateSales_exercise3 {
 			for (int arrayIndex = 0; arrayIndex < salesArray.size() - 1; arrayIndex++) {
 				String sANum = salesArray.get(arrayIndex).substring(0, 8);
 				int sANumNew = Integer.parseInt(sANum);
-				System.out.println(sANum);// ■?
 
 				String sA2Num = salesArray.get(arrayIndex + 1).substring(0, 8);
 				int sA2NumNew = Integer.parseInt(sA2Num);
-				System.out.println(sA2Num);// ■?
 
 				if (sA2NumNew - sANumNew != 1) {
 					System.out.println(salesFile + "が連番になっていません");
@@ -93,7 +89,7 @@ public class CulculateSales_exercise3 {
 			try {
 				for (int arrayIndex = 0; arrayIndex < salesArray.size(); arrayIndex++) {
 					// ここで、salesArrayをファイルを順番に読み込んでいく
-					File sales = new File(args[0] + "\\" + salesArray.get(arrayIndex)); // 売上ファイル
+					File sales = new File(args[0] + "\\" + salesArray.get(arrayIndex)); 
 					FileReader fr = new FileReader(sales);
 					BufferedReader br = new BufferedReader(fr);
 					String salesLine;
@@ -102,44 +98,38 @@ public class CulculateSales_exercise3 {
 						saleFileList.add(salesLine);
 					}
 					br.close();
-					if (saleFileList.size() != 3) { // ●3行かどうか。
+					if (saleFileList.size() != 3) { 
 						System.out.println(salesArray.get(arrayIndex) + "のフォーマットが不正です");
 					}
-					if (!branchMap.containsKey(saleFileList.get(0))) { // ●1行目が支店コードかどうか。
+					if (!branchMap.containsKey(saleFileList.get(0))) { 
 						System.out.println(salesArray.get(arrayIndex) + "の支店コードが不正です");
 					}
 
-					if (!commodityMap.containsKey(saleFileList.get(1))) { // ●2行目が商品コードかどうか。
-						// ●●以下、読み込んだものが、商品コードかどうかのくだり
+					if (!commodityMap.containsKey(saleFileList.get(1))) { 
 						System.out.println(salesArray.get(arrayIndex) + "の商品コードが不正です");
 					}
 
-					if (!(saleFileList.get(2).matches("^\\d{1,10}$"))) { // ●3行目が商品コードかどうか。
+					if (!(saleFileList.get(2).matches("^\\d{1,10}$"))) { 
 						System.out.println(salesArray.get(arrayIndex) + "の売上額が10桁を超えています");
 						return;
 					}
-					long Sales_Long = Long.parseLong(saleFileList.get(2)); // ●足し算するためにstrをlong（数値）に変換
-
-					if (!(branchSalesMap.containsKey(saleFileList.get(0)))) { // 売上集計Mapに読み込んだ１行目が含む
-																				// or
-																				// not
+					long Sales_Long = Long.parseLong(saleFileList.get(2)); 
+					if (!(branchSalesMap.containsKey(saleFileList.get(0)))) { 
 						branchSalesMap.put(saleFileList.get(0), Sales_Long);
 					} else {
-						long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long; // ●支店別売上合計値をだして、マップに戻す。
+						long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long;
 						String sumCount = String.valueOf(sumBranchSales);
 						if (!sumCount.matches("^\\d{1,10}$")) {
 							System.out.println(sumCount);
 							System.out.println("合計金額が10桁を超えました");
 							return;
 						}
-						branchSalesMap.put(saleFileList.get(0), sumBranchSales);// ■
+						branchSalesMap.put(saleFileList.get(0), sumBranchSales);
 					}
-					if (!(commoditySalesMap.containsKey(saleFileList.get(1)))) { // 売上集計Mapに読み込んだ１行目が含む
-																					// or
-																					// not
+					if (!(commoditySalesMap.containsKey(saleFileList.get(1)))) { 
 						commoditySalesMap.put(saleFileList.get(1), Sales_Long);
 					} else {
-						long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long; // ●支店別売上合計値をだして、マップに戻す。
+						long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long; 
 						String sumCount2 = String.valueOf(sumCommoditySales);
 						if (!sumCount2.matches("^\\d{1,10}$")) {
 							System.out.println(sumCount2);
@@ -149,14 +139,14 @@ public class CulculateSales_exercise3 {
 						commoditySalesMap.put(saleFileList.get(1), sumCommoditySales);
 					}
 				}
-				System.out.println(branchSalesMap.entrySet()); // ■
-				System.out.println(commoditySalesMap.entrySet()); // ■
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			} finally {
 			}
 
+			
+			
 			List<Map.Entry<String, Long>> branchSalesEntry = new ArrayList<Map.Entry<String, Long>>(
 					branchSalesMap.entrySet());
 			Collections.sort(branchSalesEntry, new Comparator<Map.Entry<String, Long>>() {
@@ -172,7 +162,6 @@ public class CulculateSales_exercise3 {
 				File branchOutFile = new File(args[0], "branch.out");
 				FileWriter fwBranch = new FileWriter(branchOutFile);
 				BufferedWriter bwBranch = new BufferedWriter(fwBranch);
-
 				for (Entry<String, Long> forBranchOut : branchSalesEntry) {
 					bwBranch.write(forBranchOut.getKey() + "," + branchMap.get(forBranchOut.getKey()) + ","
 							+ forBranchOut.getValue());
@@ -183,6 +172,8 @@ public class CulculateSales_exercise3 {
 				System.out.println(e);
 			}
 
+			
+			
 			List<Map.Entry<String, Long>> commoditySalesEntry = new ArrayList<Map.Entry<String, Long>>(
 					commoditySalesMap.entrySet());
 			Collections.sort(commoditySalesEntry, new Comparator<Map.Entry<String, Long>>() {
@@ -207,7 +198,6 @@ public class CulculateSales_exercise3 {
 			} catch (IOException e) {
 				System.out.println(e);
 			}
-
 		}
 	}
 }
