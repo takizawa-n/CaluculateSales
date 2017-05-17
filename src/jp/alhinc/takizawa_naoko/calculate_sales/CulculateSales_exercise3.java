@@ -22,12 +22,11 @@ public class CulculateSales_exercise3 {
 		HashMap<String, Long> branchSalesMap = new HashMap<String, Long>();
 		HashMap<String, Long> commoditySalesMap = new HashMap<String, Long>();
 
-
 		if (args.length != 1) {
 			System.out.println("予期せぬエラーが発生しました");
 		}
 
-		File branchFile = new File(args[0], "branch.lst"); 
+		File branchFile = new File(args[0], "branch.lst");
 		if (!branchFile.exists()) {
 			System.out.println("支店定義ファイルが存在しません");
 
@@ -80,12 +79,12 @@ public class CulculateSales_exercise3 {
 			}
 		}
 
-		File commodityFile = new File(args[0], "commodity.lst"); 
+		File commodityFile = new File(args[0], "commodity.lst");
 		if (!commodityFile.exists()) {
 			System.out.println("商品定義ファイルが存在しません");
 			return;
 		}
-		
+
 		BufferedReader brcommodityFile = null;
 		try {
 			FileReader frcommodityFile = new FileReader(commodityFile);
@@ -100,7 +99,7 @@ public class CulculateSales_exercise3 {
 				commodityMap.put(commodities[0], commodities[1]);
 			}
 		} catch (IOException e) {
-			System.out.println(e);
+			System.out.println("予期せぬエラーが発生しました");
 		} finally {
 			try {
 				brcommodityFile.close();
@@ -110,11 +109,11 @@ public class CulculateSales_exercise3 {
 		}
 
 		ArrayList<String> salesArray = new ArrayList<String>();
-		File salesFile = new File(args[0]); 
-		String[] fileList = salesFile.list();
-		for (String salesList : fileList) {
-			if (salesList.matches("\\d{8}\\.rcd$")) {//「ファイルかどうかのチェック」の処理未記入
-				salesArray.add(salesList);
+		File salesFilesDirs = new File(args[0]);
+		File[] filelist = salesFilesDirs.listFiles();
+		for(int i = 0; i < filelist.length; i++){
+			if(filelist[i].isFile() && filelist[i].getName().matches("\\d{8}\\.rcd$")){
+				salesArray.add(filelist[i].getName());
 			}
 		}
 		Collections.sort(salesArray);
@@ -126,74 +125,75 @@ public class CulculateSales_exercise3 {
 			String salesArrayName2 = salesArray.get(salesArrayIndex + 1).substring(1, 8);
 			int salesArrayName2_int = Integer.parseInt(salesArrayName2);
 			if (salesArrayName2_int - salesArrayName_int != 1) {
-				System.out.println("ファイル名が連番になっていません");
+				System.out.println("売上ファイル名が連番になっていません");
 				return;
 			}
 		}
 
-
+		BufferedReader brsales;
 		try {
 			for (int arrayIndex = 0; arrayIndex < salesArray.size(); arrayIndex++) {
-				File sales = new File(args[0], salesArray.get(arrayIndex)); 
-				FileReader fr = new FileReader(sales);
-				BufferedReader br = new BufferedReader(fr);
+				File sales = new File(args[0], salesArray.get(arrayIndex));
+				FileReader frsales = new FileReader(sales);
+				brsales = new BufferedReader(frsales);
 				String salesLine;
 				ArrayList<String> saleFileList = new ArrayList<String>();
-				while ((salesLine = br.readLine()) != null) {
+				while ((salesLine = brsales.readLine()) != null) {
 					saleFileList.add(salesLine);
 				}
-				br.close();
-				if (saleFileList.size() != 3) { 
+				brsales.close();
+				if (saleFileList.size() != 3) {
 					System.out.println(salesArray.get(arrayIndex) + "のフォーマットが不正です");
 					return;
 				}
-				if (!branchMap.containsKey(saleFileList.get(0))){
+				if (!branchMap.containsKey(saleFileList.get(0))) {
 					System.out.println(salesArray.get(arrayIndex) + "の支店コードが不正です");
 					return;
 				}
 
-				if (!commodityMap.containsKey(saleFileList.get(1))) { 
-					// ●●以下、読み込んだものが、商品コードかどうかのくだり
+				if (!commodityMap.containsKey(saleFileList.get(1))) {
 					System.out.println(salesArray.get(arrayIndex) + "の商品コードが不正です");
 					return;
 				}
 
-				if (!(saleFileList.get(2).matches("^\\d{1,10}$"))) {
-					System.out.println(salesArray.get(arrayIndex) + "の売上額が10桁を超えています");
+				if (!(saleFileList.get(2).matches("^[0-9]+$"))) {
+					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
-				long Sales_Long = Long.parseLong(saleFileList.get(2)); 
 
-				if (!(branchSalesMap.containsKey(saleFileList.get(0)))) { 
+				long Sales_Long = Long.parseLong(saleFileList.get(2));
+
+				if (!(branchSalesMap.containsKey(saleFileList.get(0)))) {
 					branchSalesMap.put(saleFileList.get(0), Sales_Long);
-					long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long; 
+				} else {
+					long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long;
 					String sumCount = String.valueOf(sumBranchSales);
-					if (!sumCount.matches("^\\d{1,10}$")) {
-						System.out.println(sumCount);
+					if (!sumCount.matches("^[0-9]{1,10}$")) {
 						System.out.println("合計金額が10桁を超えました");
 						return;
 					}
 					branchSalesMap.put(saleFileList.get(0), sumBranchSales);
 				}
-				if (!(commoditySalesMap.containsKey(saleFileList.get(1)))) { 
+
+				if (!(commoditySalesMap.containsKey(saleFileList.get(1)))) {
 					commoditySalesMap.put(saleFileList.get(1), Sales_Long);
+				} else {
+					long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long;
+					String sumCount2 = String.valueOf(sumCommoditySales);
+					if (!sumCount2.matches("^\\d{1,10}$")) {
+						System.out.println("合計金額が10桁を超えました");
+						return;
+					}
+					commoditySalesMap.put(saleFileList.get(1), sumCommoditySales);
 				}
-				long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long; 
-				String sumCount2 = String.valueOf(sumCommoditySales);
-				if (!sumCount2.matches("^\\d{1,10}$")) {
-					System.out.println(sumCount2);
-					System.out.println("合計金額が10桁を超えました");
-					return;
-				}
-				commoditySalesMap.put(saleFileList.get(1), sumCommoditySales);
 			}
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
+		}catch (IOException e) {
+				// TODO 自動生成された catch ブロック
 			System.out.println("予期せぬエラーが発生しました");
-		} finally {
 		}
 
-		
+
+
 		List<Map.Entry<String, Long>> branchSalesEntry = new ArrayList<Map.Entry<String, Long>>(
 				branchSalesMap.entrySet());
 		Collections.sort(branchSalesEntry, new Comparator<Map.Entry<String, Long>>() {
