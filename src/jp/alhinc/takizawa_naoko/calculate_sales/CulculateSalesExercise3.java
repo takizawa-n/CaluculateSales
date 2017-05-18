@@ -43,7 +43,7 @@ public class CulculateSalesExercise3 {
 			return false;
 		} finally {
 			try {
-				if(br != null){
+				if (br != null) {
 					br.close();
 				}
 			} catch (IOException e) {
@@ -85,7 +85,7 @@ public class CulculateSalesExercise3 {
 			return false;
 		} finally {
 			try {
-				if(bw != null){
+				if(bw != null) {
 					bw.close();
 				}
 			} catch (IOException e) {
@@ -96,8 +96,6 @@ public class CulculateSalesExercise3 {
 		return true;
 	}
 
-
-
 	public static void main(String args[]) throws FileNotFoundException {
 		HashMap<String, String> branchMap = new HashMap<String, String>();
 		HashMap<String, String> commodityMap = new HashMap<String, String>();
@@ -107,21 +105,20 @@ public class CulculateSalesExercise3 {
 		if (args.length != 1) {
 			System.out.println("予期せぬエラーが発生しました");
 			return;
-			}
+		}
 
-
-		if(!codeFileReader(args[0], "branch.lst", "^\\d{3}$", "支店", branchMap, branchSalesMap)){
+		if (!codeFileReader(args[0], "branch.lst", "^\\d{3}$", "支店", branchMap, branchSalesMap)) {
 			return;
 		}
-		if(!codeFileReader(args[0], "commodity.lst", "^[a-zA-Z0-9]{8}$", "商品", commodityMap, commoditySalesMap)){
+		if (!codeFileReader(args[0], "commodity.lst", "^[a-zA-Z0-9]{8}$", "商品", commodityMap, commoditySalesMap)) {
 			return;
 		}
 
 		ArrayList<String> salesArray = new ArrayList<String>();
 		File salesFilesDirs = new File(args[0]);
 		File[] filelist = salesFilesDirs.listFiles();
-		for(int i = 0; i < filelist.length; i++){
-			if(filelist[i].isFile() && filelist[i].getName().matches("\\d{8}\\.rcd$")){
+		for (int i = 0; i < filelist.length; i++){
+			if (filelist[i].isFile() && filelist[i].getName().matches("\\d{8}\\.rcd$")) {
 				salesArray.add(filelist[i].getName());
 			}
 		}
@@ -166,6 +163,11 @@ public class CulculateSalesExercise3 {
 					System.out.println(salesArray.get(i) + "の支店コードが不正です");
 					return;
 				}
+				if (!commodityMap.containsKey(saleFileList.get(1))) {
+					System.out.println(salesArray.get(i) + "の商品コードが不正です");
+					return;
+				}
+
 				long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + SalesLong;
 				String sumCount = String.valueOf(sumBranchSales);
 				if (!sumCount.matches("^[0-9]{1,10}$")) {
@@ -173,17 +175,12 @@ public class CulculateSalesExercise3 {
 					return;
 				}
 
-				if (!commodityMap.containsKey(saleFileList.get(1))) {
-					System.out.println(salesArray.get(i) + "の商品コードが不正です");
-					return;
-				}
 				long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + SalesLong;
 				String sumCount2 = String.valueOf(sumCommoditySales);
 				if (!sumCount2.matches("^\\d{1,10}$")) {
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
-
 
 				branchSalesMap.put(saleFileList.get(0), sumBranchSales);
 				commoditySalesMap.put(saleFileList.get(1), sumCommoditySales);
@@ -193,7 +190,7 @@ public class CulculateSalesExercise3 {
 			return;
 		} finally {
 			try {
-				if(br != null){
+				if(br != null) {
 					br.close();
 				}
 			} catch (IOException e) {
@@ -203,10 +200,10 @@ public class CulculateSalesExercise3 {
 		}
 
 
-		if(!salesSortWriter(args[0], "branch.out", branchMap, branchSalesMap)){
+		if(!salesSortWriter(args[0], "branch.out", branchMap, branchSalesMap)) {
 			return;
 		}
-		if(!salesSortWriter(args[0], "commodity.out", commodityMap, commoditySalesMap)){
+		if(!salesSortWriter(args[0], "commodity.out", commodityMap, commoditySalesMap)) {
 			return;
 		}
 	}
