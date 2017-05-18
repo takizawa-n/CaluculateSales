@@ -139,7 +139,7 @@ public class CulculateSalesExercise3 {
 			}
 		}
 
-		BufferedReader br;
+		BufferedReader br = null;
 		try {
 			for (int i = 0; i < salesArray.size(); i++) {
 				File sales = new File(args[0], salesArray.get(i));
@@ -150,9 +150,7 @@ public class CulculateSalesExercise3 {
 				while ((salesLine = br.readLine()) != null) {
 					saleFileList.add(salesLine);
 				}
-				if(br != null){
-					br.close();
-				}
+
 
 				if (saleFileList.size() != 3) {
 					System.out.println(salesArray.get(i) + "のフォーマットが不正です");
@@ -190,10 +188,16 @@ public class CulculateSalesExercise3 {
 				branchSalesMap.put(saleFileList.get(0), sumBranchSales);
 				commoditySalesMap.put(saleFileList.get(1), sumCommoditySales);
 			}
-		}catch (IOException e) {
-				// TODO 自動生成された catch ブロック
+		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
-		}
+		} finally {
+			try {
+				if(br != null){
+					br.close();
+				}
+				} catch (IOException e) {
+					System.out.println("予期せぬエラーが発生しました");
+				}
 
 
 
@@ -202,6 +206,7 @@ public class CulculateSalesExercise3 {
 		}
 		if(!salesSortWriter(args[0], "commodity.out", commodityMap, commoditySalesMap)){
 			return;
+		}
 		}
 	}
 }
