@@ -190,15 +190,17 @@ public class CulculateSalesExercise3 {
 			}
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
+			return;
 		} finally {
 			try {
 				if(br != null){
 					br.close();
 				}
-				} catch (IOException e) {
-					System.out.println("予期せぬエラーが発生しました");
-				}
-
+			} catch (IOException e) {
+				System.out.println("予期せぬエラーが発生しました");
+				return;
+			}
+		}
 
 
 		if(!salesSortWriter(args[0], "branch.out", branchMap, branchSalesMap)){
@@ -206,7 +208,6 @@ public class CulculateSalesExercise3 {
 		}
 		if(!salesSortWriter(args[0], "commodity.out", commodityMap, commoditySalesMap)){
 			return;
-		}
 		}
 	}
 }
