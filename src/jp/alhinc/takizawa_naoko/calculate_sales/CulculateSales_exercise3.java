@@ -24,17 +24,20 @@ public class CulculateSales_exercise3 {
 
 		if (args.length != 1) {
 			System.out.println("予期せぬエラーが発生しました");
+			return;
 		}
 
 		File branchFile = new File(args[0], "branch.lst");
 		if (!branchFile.exists()) {
 			System.out.println("支店定義ファイルが存在しません");
+			return;
+		}
 
-			BufferedReader brBranchFile = null;
-			try {
-				FileReader frBranchFile = new FileReader(branchFile);
-				brBranchFile = new BufferedReader(frBranchFile);
-				String s;
+		BufferedReader brBranchFile = null;
+		try {
+			FileReader frBranchFile = new FileReader(branchFile);
+			brBranchFile = new BufferedReader(frBranchFile);
+			String s;
 				while ((s = brBranchFile.readLine()) != null) {
 
 					String[] branches = s.split(",");
@@ -43,32 +46,8 @@ public class CulculateSales_exercise3 {
 						return;
 					}
 					branchMap.put(branches[0], branches[1]);
+					branchSalesMap.put(branches[0], 0L);
 				}
-			} catch (IOException e) {
-				System.out.println("予期せぬエラーが発生しました");
-			} finally {
-				try {
-					brBranchFile.close();
-				} catch (IOException e) {
-					System.out.println("予期せぬエラーが発生しました");
-				}
-			}
-		}
-
-		BufferedReader brBranchFile = null;
-		try {
-			FileReader frBranchFile = new FileReader(branchFile);
-			brBranchFile = new BufferedReader(frBranchFile);
-			String s;
-			while ((s = brBranchFile.readLine()) != null) {
-				String[] branches = s.split(",");
-				if (!((branches.length == 2) && (branches[0].matches("^\\d{3}$")))) {
-					System.out.println("支店定義ファイルのフォーマットが不正です");
-					return;
-				}
-				branchMap.put(branches[0], branches[1]);
-			}
-
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
 		} finally {
@@ -78,6 +57,9 @@ public class CulculateSales_exercise3 {
 				System.out.println("予期せぬエラーが発生しました");
 			}
 		}
+
+
+
 
 		File commodityFile = new File(args[0], "commodity.lst");
 		if (!commodityFile.exists()) {
@@ -97,6 +79,7 @@ public class CulculateSales_exercise3 {
 					return;
 				}
 				commodityMap.put(commodities[0], commodities[1]);
+				commoditySalesMap.put(commodities[0], 0L);
 			}
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
@@ -142,29 +125,21 @@ public class CulculateSales_exercise3 {
 					saleFileList.add(salesLine);
 				}
 				brsales.close();
+
 				if (saleFileList.size() != 3) {
 					System.out.println(salesArray.get(arrayIndex) + "のフォーマットが不正です");
 					return;
 				}
-				if (!branchMap.containsKey(saleFileList.get(0))) {
-					System.out.println(salesArray.get(arrayIndex) + "の支店コードが不正です");
-					return;
-				}
-
-				if (!commodityMap.containsKey(saleFileList.get(1))) {
-					System.out.println(salesArray.get(arrayIndex) + "の商品コードが不正です");
-					return;
-				}
-
 				if (!(saleFileList.get(2).matches("^[0-9]+$"))) {
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
-
 				long Sales_Long = Long.parseLong(saleFileList.get(2));
+				
 
-				if (!(branchSalesMap.containsKey(saleFileList.get(0)))) {
-					branchSalesMap.put(saleFileList.get(0), Sales_Long);
+				if (!branchMap.containsKey(saleFileList.get(0))) {
+					System.out.println(salesArray.get(arrayIndex) + "の支店コードが不正です");
+					return;
 				} else {
 					long sumBranchSales = branchSalesMap.get(saleFileList.get(0)) + Sales_Long;
 					String sumCount = String.valueOf(sumBranchSales);
@@ -175,8 +150,9 @@ public class CulculateSales_exercise3 {
 					branchSalesMap.put(saleFileList.get(0), sumBranchSales);
 				}
 
-				if (!(commoditySalesMap.containsKey(saleFileList.get(1)))) {
-					commoditySalesMap.put(saleFileList.get(1), Sales_Long);
+				if (!commodityMap.containsKey(saleFileList.get(1))) {
+					System.out.println(salesArray.get(arrayIndex) + "の商品コードが不正です");
+					return;
 				} else {
 					long sumCommoditySales = commoditySalesMap.get(saleFileList.get(1)) + Sales_Long;
 					String sumCount2 = String.valueOf(sumCommoditySales);
